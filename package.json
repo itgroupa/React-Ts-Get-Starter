@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "- ts\r - webpack\r - react\r - scss",
   "scripts": {
-    "build-dev": "webpack --config webpack.config.js",
-    "build-prod": "webpack --config webpack.config.prod.js",
-    "start-dev": "webpack-dev-server --config webpack.config.js --open",
-    "start-mock": "webpack-dev-server --config webpack.config.mock.js --open"
+    "build-dev": "webpack --env.dev=true",
+    "build-prod": "webpack --env.dev=false",
+    "start-dev": "webpack-dev-server --env.dev=true  --open",
+    "start-mock": "webpack-dev-server --env.dev=true --env.mock=true  --open"
   },
   "repository": {
     "type": "git",
