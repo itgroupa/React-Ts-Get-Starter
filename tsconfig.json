@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "build/dist",
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es6",
     "sourceMap": true,
     "allowJs": true,
