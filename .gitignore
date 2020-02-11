@@ -5,3 +5,4 @@
 **/.git
 **/build
 **/.idea
+package-lock.json
