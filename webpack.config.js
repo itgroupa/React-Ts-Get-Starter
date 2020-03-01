@@ -4,6 +4,8 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
 
+const fs = require('fs');
+
 const buildFolder = path.join(__dirname, 'build');
 const buildAssetsFolder = path.join(buildFolder, 'assets');
 
@@ -27,19 +29,53 @@ const getPlugins = (dev, mock) => {
 
     //replace file
     if (mock) {
+        /*result.push(
+            new webpack.NormalModuleReplacementPlugin(/\.ts$/, function (res) {
+                if (res.request.endsWith('environment.ts')) {
+                    const file_for_replace = resource.request.replace(/environment.ts/, 'environment.mock.ts');
+                    if (fs.existsSync(path.resolve(resource.context, file_for_replace))) {
+                        resource.request = file_for_replace;
+                    }
+                }
+                if (res.request.endsWith('environment.ts')) {
+                    const file_for_replace = resource.request.replace(/web-api-http.service.ts/, 'mock-web-api-http.service.ts');
+                    if (fs.existsSync(path.resolve(resource.context, file_for_replace))) {
+                        resource.request = file_for_replace;
+                    }
+                }
+                if (res.request.endsWith('environment.ts')) {
+                    const file_for_replace = resource.request.replace(/web-socket.service.ts/, 'mock-web-socket.service.ts');
+                    if (fs.existsSync(path.resolve(resource.context, file_for_replace))) {
+                        resource.request = file_for_replace;
+                    }
+                }
+            })
+        );*/
         result.push(
             new webpack.NormalModuleReplacementPlugin(
                 /environment.ts/,
                 'environment.mock.ts'
             )
-        )
+        );
+        result.push(
+            new webpack.NormalModuleReplacementPlugin(
+                /web-api-http.service.ts/,
+                'mock-web-api-http.service.ts'
+            )
+        );
+        result.push(
+            new webpack.NormalModuleReplacementPlugin(
+                /web-socket.service.ts/,
+                'mock-web-socket.service.ts'
+            )
+        );
     } else if (dev) {
         result.push(
             new webpack.NormalModuleReplacementPlugin(
                 /environment.ts/,
                 'environment.dev.ts'
             )
-        )
+        );
     }
     return result;
 }
