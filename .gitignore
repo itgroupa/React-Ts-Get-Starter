@@ -1,9 +1,8 @@
+**/.idea
+**/bin
+**/obj
 **/.vs
 **/node_modules
 **/dist
 **/tmp
 **/.git
-**/build
-**/.idea
-package-lock.json
-yarn.lock
