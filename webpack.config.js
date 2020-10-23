@@ -1,99 +1,83 @@
 const path = require('path');
 const webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
-
-const fs = require('fs');
+const TerserPlugin = require('terser-webpack-plugin');
+const JSONMinifyPlugin = require('node-json-minify');
+const workboxPlugin = require('workbox-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 const buildFolder = path.join(__dirname, 'build');
 const buildAssetsFolder = path.join(buildFolder, 'assets');
 
-const getPlugins = (dev, mock) => {
+const getPlugins = (build) => {
     //basicly
     let result = [
         new HtmlWebpackPlugin({
             template: './public/index.html',
         }),
-        new CopyPlugin([
-            {from: './public/assets', to: buildAssetsFolder},
-        ]),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: './public/assets/translate', 
+                    transform: function(content) {
+                        return JSONMinifyPlugin(content.toString());
+                    },
+                    to: `${buildAssetsFolder}/translate`
+                },
+                {
+                    from: './public/assets/icons', 
+                    to: buildAssetsFolder
+                },
+                {
+                    from: './public/manifest.json', 
+                    transform: function(content) {
+                        return JSONMinifyPlugin(content.toString());
+                    },
+                    to: buildFolder
+                },
+            ]
+        })
     ];
 
     //minifications
-    if (!dev) {
+    if (build !== 'local') {
+        result.push(new workboxPlugin.GenerateSW({
+            swDest: 'sw.js',
+            clientsClaim: true,
+            skipWaiting: true,
+          }));
+        result.push(new webpack.DefinePlugin({
+            '__REACT_DEVTOOLS_GLOBAL_HOOK__': '({ isDisabled: true })'
+          }));
+        result.push(new CompressionPlugin({
+            test: /\.js(\?.*)?$/i,
+          }));
         result.push(
-            new MinifyPlugin()
-        )
+            new TerserPlugin()
+        );
     }
 
     //replace file
-    if (mock) {
-        /*result.push(
-            new webpack.NormalModuleReplacementPlugin(/\.ts$/, function (res) {
-                if (res.request.endsWith('environment.ts')) {
-                    const file_for_replace = resource.request.replace(/environment.ts/, 'environment.mock.ts');
-                    if (fs.existsSync(path.resolve(resource.context, file_for_replace))) {
-                        resource.request = file_for_replace;
-                    }
-                }
-                if (res.request.endsWith('environment.ts')) {
-                    const file_for_replace = resource.request.replace(/web-api-http.service.ts/, 'mock-web-api-http.service.ts');
-                    if (fs.existsSync(path.resolve(resource.context, file_for_replace))) {
-                        resource.request = file_for_replace;
-                    }
-                }
-                if (res.request.endsWith('environment.ts')) {
-                    const file_for_replace = resource.request.replace(/web-socket.service.ts/, 'mock-web-socket.service.ts');
-                    if (fs.existsSync(path.resolve(resource.context, file_for_replace))) {
-                        resource.request = file_for_replace;
-                    }
-                }
-            })
-        );*/
+    if (build !== 'local') {
         result.push(
             new webpack.NormalModuleReplacementPlugin(
                 /environment.ts/,
-                'environment.mock.ts'
-            )
-        );
-        result.push(
-            new webpack.NormalModuleReplacementPlugin(
-                /web-api-http.service.ts/,
-                'mock-web-api-http.service.ts'
-            )
-        );
-        result.push(
-            new webpack.NormalModuleReplacementPlugin(
-                /web-socket.service.ts/,
-                'mock-web-socket.service.ts'
-            )
-        );
-    } else if (dev) {
-        result.push(
-            new webpack.NormalModuleReplacementPlugin(
-                /environment.ts/,
-                'environment.dev.ts'
+                `environment.${build}.ts`
             )
         );
     }
     return result;
 }
 
-const getFileNames = (dev) => dev ? '[name].bundle.js' : '[name].[contenthash].bundle.js';
-const getDevTools = (dev) => dev ? 'source-map' : 'none';
-const getMode = (dev) => dev ? 'development' : 'production';
+const getFileNames = (build) => build === 'local' ? '[name].bundle.js' : '[name].[contenthash].bundle.js';
+const getDevTools = (build) => build === 'local' ? 'source-map' : 'none';
+const getMode = (build) => build === 'local' ? 'development' : 'production';
 
 module.exports = env => {
-
-    let mock = env.mock === 'true';
-    let dev = env.dev === 'true';
-
-    console.log(`dev mode = ${dev}`);
-    console.log(`mock mode = ${mock}`);
-
+    const build = env.build;
     return {
-        mode: getMode(dev),
+        mode: getMode(build),
 
         entry: {
             polyfills: './src/polyfills.js',
@@ -102,10 +86,11 @@ module.exports = env => {
 
         output: {
             path: buildFolder,
-            filename: getFileNames(dev),
+            filename: getFileNames(build),
+            publicPath: "/"
         },
 
-        devtool: getDevTools(dev),
+        devtool: getDevTools(build),
 
 
         resolve: {
@@ -125,17 +110,16 @@ module.exports = env => {
                     ]
                 },
                 {
-                    test: /\.scss$/,
-                    use: ['style-loader', 'css-loader', 'sass-loader']
+                    test: /\.less$/,
+                    use: ['style-loader', 'css-loader', 'less-loader']
                 },
             ]
         },
-        plugins: getPlugins(dev, mock),
+        plugins: getPlugins(build),
 
         devServer: {
             contentBase: path.join(__dirname, 'build'),
-            compress: true,
-            port: 8080,
+            compress: false,
             clientLogLevel: 'none',
             historyApiFallback: true,
             watchContentBase: true

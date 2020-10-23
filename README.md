@@ -3,10 +3,8 @@
 - ts
 - webpack
 - react
-- scss
+- less
 
-export const store = redux.createStore(RootReducer, redux.applyMiddleware(thunk));
+npm install react react-dom react-router-dom rxjs --save
 
-npm install @aspnet/signalr babel-polyfill css-loader node-sass react react-dom react-redux react-router-dom redux redux-thunk sass-loader style-loader ts-loader typescript webpack webpack-cli webpack-dev-server --save
-
-npm install @types/history @types/react @types/react-dom @types/react-redux @types/react-router-dom babel-minify-webpack-plugin copy-webpack-plugin html-webpack-plugin webpack-merge --save-dev
+npm install @types/history @types/react @types/react-dom @types/react-router-dom compression-webpack-plugin copy-webpack-plugin css-loader html-webpack-plugin less less-loader node-json-minify react-app-polyfill style-loader terser-webpack-plugin ts-loader typescript webpack webpack-cli webpack-dev-server webpack-merge workbox-webpack-plugin --save-dev

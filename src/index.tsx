@@ -1,7 +1,12 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from './components/app.component';
-import './../public/css/global.scss';
+import React from "react";
+import ReactDOM, { render } from "react-dom";
+import { App } from 'components/app.component';
+
+if ('serviceWorker' in navigator && !!SW_ACTIVE) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then();
+  });
+}
 
 ReactDOM.render(
     <App />,

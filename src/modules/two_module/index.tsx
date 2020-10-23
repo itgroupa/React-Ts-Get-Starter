@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 
-class TwoComponent extends React.Component {
-    render() {
+const TwoComponent: FC = () => {
+    {
         return (
             <p>Hello three</p>
         )

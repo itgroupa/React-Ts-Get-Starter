@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React, { FC } from 'react';
 
-class OneComponent extends React.Component {
-    render() {
+const OneComponent: FC = () => {
+    {
         return (
-            <p>One module</p>
+            <p>Hello three</p>
         )
     }
 }

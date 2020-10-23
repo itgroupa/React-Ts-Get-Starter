@@ -1,10 +1,10 @@
-import * as React from 'react';
+import React, { useState, createContext, useEffect, Context, FC, Suspense, lazy } from 'react';
 import {Router, Route, Switch, Link} from 'react-router-dom';
 import {createBrowserHistory} from 'history';
 import {environment} from "../env/environment";
 
-const oneRoute = React.lazy(() => import('../modules/one_module/index'));
-const twoRoute = React.lazy(() => import('../modules/two_module/index'));
+const oneRoute = lazy(() => import('../modules/one_module/index'));
+const twoRoute = lazy(() => import('../modules/two_module/index'));
 
 const history = createBrowserHistory();
 
