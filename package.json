@@ -1,15 +1,53 @@
 {
-  "name": "",
+  "name": "temp",
   "version": "1.0.0",
   "description": "",
   "scripts": {
     "build-dev": "webpack --env.build=dev",
-    "start-dev": "webpack-dev-server --env.build=local --port 5004  --open"
+    "start-dev": "webpack-dev-server --env.build=local --port 5002  --open",
+    "lint": "eslint -c .eslintrc.json ./src/**",
+    "lint:fix": "eslint -c .eslintrc.json --fix ./src/**"
   },
-  "author": "",
-  "license": "",
-  "dependencies": {
-  },
+  "author": "temp",
+  "license": "MIT",
   "devDependencies": {
+    "@types/history": "^4.7.8",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-dom": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "compression-webpack-plugin": "^6.0.2",
+    "copy-webpack-plugin": "^6.1.0",
+    "css-loader": "^4.2.2",
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "node-json-minify": "^1.0.0",
+    "react-app-polyfill": "^2.0.0",
+    "sass": "^1.30.0",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^4.2.1",
+    "ts-loader": "^8.0.12",
+    "typescript": "^4.1.3",
+    "uuid": "^8.3.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.1.3",
+    "workbox-webpack-plugin": "^5.1.4"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "history": "^4.10.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "rxjs": "^6.6.3"
   }
 }

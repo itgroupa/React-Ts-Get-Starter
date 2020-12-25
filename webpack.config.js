@@ -1,3 +1,4 @@
+const settings = require('./src/settings');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -6,31 +7,30 @@ const TerserPlugin = require('terser-webpack-plugin');
 const JSONMinifyPlugin = require('node-json-minify');
 const workboxPlugin = require('workbox-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const uuid = require('uuid');
+const fs = require('fs');
 
 const buildFolder = path.join(__dirname, 'build');
-const buildAssetsFolder = path.join(buildFolder, 'assets');
 
 const getPlugins = (build) => {
-    //basicly
+    let version = uuid.v4();
+    if (!fs.existsSync(path.join(buildFolder))) {
+        fs.mkdirSync(buildFolder, 0o744);
+    }
+    console.log(settings);
+    fs.writeFileSync(path.join(buildFolder, settings.SW_VERSION_NAME), `{"version": "${version}"}`, {encoding:'utf8',flag:'w'});
+
     let result = [
         new HtmlWebpackPlugin({
             template: './public/index.html',
+            templateParameters: {
+                'basePath': '',
+            },
         }),
         new CopyPlugin({
             patterns: [
                 {
-                    from: './public/assets/translate', 
-                    transform: function(content) {
-                        return JSONMinifyPlugin(content.toString());
-                    },
-                    to: `${buildAssetsFolder}/translate`
-                },
-                {
-                    from: './public/assets/icons', 
-                    to: buildAssetsFolder
-                },
-                {
-                    from: './public/manifest.json', 
+                    from: './public/manifest.json',
                     transform: function(content) {
                         return JSONMinifyPlugin(content.toString());
                     },
@@ -43,7 +43,7 @@ const getPlugins = (build) => {
     //minifications
     if (build !== 'local') {
         result.push(new workboxPlugin.GenerateSW({
-            swDest: 'sw.js',
+            swDest: settings.SW_FILE_NAME,
             clientsClaim: true,
             skipWaiting: true,
           }));
@@ -87,7 +87,7 @@ module.exports = env => {
         output: {
             path: buildFolder,
             filename: getFileNames(build),
-            publicPath: "/"
+            publicPath: build === 'beta' ? '/admin' : '/'
         },
 
         devtool: getDevTools(build),
@@ -110,8 +110,8 @@ module.exports = env => {
                     ]
                 },
                 {
-                    test: /\.less$/,
-                    use: ['style-loader', 'css-loader', 'less-loader']
+                    test: /\.sass$/,
+                    use: ['style-loader', 'css-loader', 'sass-loader']
                 },
             ]
         },
