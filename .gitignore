@@ -8,3 +8,4 @@
 **/tmp
 **/.git
 **/package-lock.json
+**/__snapshots__
