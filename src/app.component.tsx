@@ -1,3 +1,4 @@
+import './styles/global.scss';
 import { Loading } from './components/loading.component';
 import { Root } from './components/root.component';
 import { GlobalProvider } from './providers';

@@ -1,4 +1,4 @@
-import '../public/css/global.sass';
+import './styles/global.scss';
 import { App } from './app.component';
 import { SW_ACTIVE, WEB_URI } from './env/environment';
 import { VersionModel } from './models/version-model';

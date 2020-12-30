@@ -3,6 +3,7 @@
 - ts
 - webpack
 - react
-- sass
+- scss
 - eslint
 - jest
+- service workers
